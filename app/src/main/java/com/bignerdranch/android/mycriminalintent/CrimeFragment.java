@@ -30,7 +30,7 @@ public class CrimeFragment extends Fragment {
     }
     @Override
     public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState){
+                             ViewGroup container, final Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_crime, container, false);
 
         mTitleField = (EditText) view.findViewById(R.id.crime_title);
@@ -42,7 +42,7 @@ public class CrimeFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mTitleField.setText(s);
+                mTitleField.setText(s.toString());
             }
 
             @Override
@@ -50,7 +50,6 @@ public class CrimeFragment extends Fragment {
 
             }
         });
-
         mDateButton = (Button)view.findViewById(R.id.crime_date);
         mDateButton.setText(mCrime.getDate().toString());
         mDateButton.setEnabled(false);
