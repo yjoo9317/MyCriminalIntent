@@ -1,6 +1,7 @@
 package com.bignerdranch.android.mycriminalintent;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +39,10 @@ public class CrimeLab {
     }
     public Crime getCrime(UUID id){
         for(Crime crime : mCrimes){
-            if(crime.getId() == id)
+            if(crime.getId().equals(id))
                 return crime;
         }
+        Log.e("CrimeLab", "Couldn't find Crime #"+id);
         return null;
     }
 }
