@@ -10,9 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,6 +21,7 @@ public class CrimeListFragment extends Fragment {
 
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
+    private int mPos;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,10 +34,20 @@ public class CrimeListFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        updateUI();
+    }
+
     private void updateUI(){
         CrimeLab crimeLab = CrimeLab.getCrimeLab(getActivity());
-        mAdapter = new CrimeAdapter(crimeLab.getCrimes());
-        mCrimeRecyclerView.setAdapter(mAdapter);
+        if(mAdapter == null) {
+            mAdapter = new CrimeAdapter(crimeLab.getCrimes());
+            mCrimeRecyclerView.setAdapter(mAdapter);
+        } else{
+            mAdapter.notifyItemChanged(mPos);
+        }
     }
 
     private class CrimeViewHolder extends RecyclerView.ViewHolder
@@ -48,6 +57,7 @@ public class CrimeListFragment extends Fragment {
         private TextView mDateTextView;
         private CheckBox mSolvedCheckBox;
         private Crime mCrime;
+        private int mPosition;
 
         public CrimeViewHolder(View itemView){
             super(itemView);
@@ -64,8 +74,13 @@ public class CrimeListFragment extends Fragment {
             mCrime = crime;
         }
 
+        public void setPosition(int pos){
+            mPosition = pos;
+        }
+
         @Override
         public void onClick(View view){
+            mPos = mPosition;
             Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
             startActivity(intent);
         }
@@ -90,6 +105,7 @@ public class CrimeListFragment extends Fragment {
         public void onBindViewHolder(CrimeViewHolder holder, int position){
             Crime crime = mCrimes.get(position);
             holder.bindCrime(crime);
+            holder.setPosition(position);
         }
 
         @Override
