@@ -21,16 +21,28 @@ import java.util.UUID;
 
 public class CrimeFragment extends Fragment {
     private static final String TAG = "CrimeFragment";
+    private static final String ARG_CRIME_ID = "crim_id";
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
     private CheckBox mSolvedCheckBox;
 
+
+    public static CrimeFragment newInstance(UUID id){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ARG_CRIME_ID, id);
+
+        CrimeFragment crimeFragment = new CrimeFragment();
+        crimeFragment.setArguments(bundle);
+        return crimeFragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        UUID id = (UUID) getActivity().getIntent().
-                getSerializableExtra(CrimeActivity.EXTRA_CRIME_ID);
+        //UUID id = (UUID) getActivity().getIntent().
+        //        getSerializableExtra(CrimeActivity.EXTRA_CRIME_ID);
+        UUID id = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
 
         mCrime = CrimeLab.getCrimeLab(getActivity()).getCrime(id);
     }
@@ -61,7 +73,7 @@ public class CrimeFragment extends Fragment {
         mDateButton.setText(mCrime.getDate().toString());
         mDateButton.setEnabled(false);
 
-        mSolvedCheckBox = (CheckBox)view.findViewById(R.id.crime_solved);
+        mSolvedCheckBox = (CheckBox)view.findViewById(R.id.list_item_crime_solved_checkbox);
         mSolvedCheckBox.setChecked(mCrime.isSolved());
         mSolvedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
