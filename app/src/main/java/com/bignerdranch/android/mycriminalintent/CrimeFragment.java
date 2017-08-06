@@ -2,6 +2,7 @@ package com.bignerdranch.android.mycriminalintent;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -22,6 +23,7 @@ import java.util.UUID;
 public class CrimeFragment extends Fragment {
     private static final String TAG = "CrimeFragment";
     private static final String ARG_CRIME_ID = "crim_id";
+    private static final String DIALOG_DATE="dialog_date";
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
@@ -40,8 +42,6 @@ public class CrimeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        //UUID id = (UUID) getActivity().getIntent().
-        //        getSerializableExtra(CrimeActivity.EXTRA_CRIME_ID);
         UUID id = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
 
         mCrime = CrimeLab.getCrimeLab(getActivity()).getCrime(id);
@@ -71,7 +71,14 @@ public class CrimeFragment extends Fragment {
         });
         mDateButton = (Button)view.findViewById(R.id.crime_date);
         mDateButton.setText(mCrime.getDate().toString());
-        mDateButton.setEnabled(false);
+        mDateButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                FragmentManager fm = getFragmentManager();
+                DatePickerFragment dialog = new DatePickerFragment();
+                dialog.show(fm, DIALOG_DATE);
+            }
+        });
 
         mSolvedCheckBox = (CheckBox)view.findViewById(R.id.list_item_crime_solved_checkbox);
         mSolvedCheckBox.setChecked(mCrime.isSolved());

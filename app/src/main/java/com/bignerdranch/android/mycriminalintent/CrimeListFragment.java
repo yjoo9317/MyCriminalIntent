@@ -46,7 +46,8 @@ public class CrimeListFragment extends Fragment {
             mAdapter = new CrimeAdapter(crimeLab.getCrimes());
             mCrimeRecyclerView.setAdapter(mAdapter);
         } else{
-            mAdapter.notifyItemChanged(mPos);
+            //mAdapter.notifyItemChanged(mPos);
+            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -81,7 +82,7 @@ public class CrimeListFragment extends Fragment {
         @Override
         public void onClick(View view){
             mPos = mPosition;
-            Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
+            Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
             startActivity(intent);
         }
     }
