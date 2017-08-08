@@ -16,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
@@ -27,11 +28,14 @@ public class CrimeFragment extends Fragment {
     private static final String TAG = "CrimeFragment";
     private static final String ARG_CRIME_ID = "crim_id";
     private static final String DIALOG_DATE="dialog_date";
+    private static final String DIALOG_TIME="dialog_time";
     private static final int REQUEST_DATE= 100 ;
+    private static final int REQUEST_TIME=200;
 
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
+    private Button mTimeButton;
     private CheckBox mSolvedCheckBox;
 
 
@@ -87,6 +91,18 @@ public class CrimeFragment extends Fragment {
             }
         });
 
+        mTimeButton = (Button) view.findViewById(R.id.crime_time_button);
+        updateTime();
+        mTimeButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                FragmentManager fm = getFragmentManager();
+                TimePickerFragment dialog = TimePickerFragment.newInstance(date);
+                dialog.setTargetFragment(CrimeFragment.this, REQUEST_TIME);
+                dialog.show(fm, DIALOG_TIME);
+            }
+        });
+
         mSolvedCheckBox = (CheckBox)view.findViewById(R.id.list_item_crime_solved_checkbox);
         mSolvedCheckBox.setChecked(mCrime.isSolved());
         mSolvedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -102,12 +118,25 @@ public class CrimeFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent intent){
         if(requestCode != Activity.RESULT_OK)
             return;
-        if(requestCode != REQUEST_DATE)
-            return;
-        else{
+        else if(requestCode == REQUEST_DATE){
+            Log.i(TAG, "updating crime date..");
             Date date = (Date) intent.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mCrime.setDate(date);
             mDateButton.setText(date.toString());
+        } else if(requestCode == REQUEST_TIME){
+
+            Log.i(TAG, "updating crime time..");
+            Date date = (Date) intent.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
+            mCrime.setDate(date);
+            updateTime();
         }
+    }
+
+    public void updateTime(){
+        Date date = mCrime.getDate();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        String time = "Crime Time: "+ calendar.get(Calendar.HOUR)+":"+calendar.get(Calendar.MINUTE);
+        mTimeButton.setText(time);
     }
 }

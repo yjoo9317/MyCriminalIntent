@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
@@ -21,14 +22,16 @@ import java.util.zip.Inflater;
  */
 
 public class DatePickerFragment extends DialogFragment {
+
     public static final String EXTRA_DATE="crime_date";
+    private static final String TAG="DatePickerFragment";
     private static final String ARG_DATE = "date";
     private DatePicker mDatePicker;
 
     public static DatePickerFragment newInstance(Date date){
         Bundle args = new Bundle();
         args.putSerializable(ARG_DATE, date);
-
+        Log.i(TAG, "Date: "+date.toString());
         DatePickerFragment fragment = new DatePickerFragment();
         fragment.setArguments(args);
         return fragment;
@@ -36,7 +39,7 @@ public class DatePickerFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState){
 
-        final Date date = (Date) savedInstanceState.getSerializable(ARG_DATE);
+        final Date date = (Date) getArguments().getSerializable(ARG_DATE);
         final Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         final int year = calendar.get(Calendar.YEAR);
@@ -55,8 +58,8 @@ public class DatePickerFragment extends DialogFragment {
                         int year = mDatePicker.getYear();
                         int month = mDatePicker.getMonth();
                         int day = mDatePicker.getDayOfMonth();
-                        Date date = new GregorianCalendar(year, month, day).getTime();
-                        sendResult(Activity.RESULT_OK, date);
+                        Date _date = new GregorianCalendar(year, month, day).getTime();
+                        sendResult(Activity.RESULT_OK, _date);
                     }
                 })
                 .create();
