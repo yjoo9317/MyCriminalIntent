@@ -3,6 +3,7 @@ package com.bignerdranch.android.mycriminalintent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -63,6 +64,9 @@ public class CrimeListFragment extends Fragment {
                 Intent intent = CrimePagerActivity.newIntent(getContext(), crime.getId());
                 startActivity(intent);
                 return true;
+            case R.id.menu_item_show_subtitle:
+                updateSubtitle();
+                return true;
             default :
                 return super.onOptionsItemSelected(item);
         }
@@ -77,6 +81,13 @@ public class CrimeListFragment extends Fragment {
             //mAdapter.notifyItemChanged(mPos);
             mAdapter.notifyDataSetChanged();
         }
+    }
+
+    private void updateSubtitle(){
+        CrimeLab crimeLab = CrimeLab.getCrimeLab(getActivity());
+        int crimeCount = crimeLab.getCrimes().size();
+        String subtitle = getString(R.string.subtitle_format, String.valueOf(crimeCount) );
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
     }
 
     private class CrimeViewHolder extends RecyclerView.ViewHolder
