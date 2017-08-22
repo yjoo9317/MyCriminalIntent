@@ -22,10 +22,12 @@ import java.util.List;
  */
 
 public class CrimeListFragment extends Fragment {
+    private static final String SAVED_SUBTITLE_VISIBLE = "subtitle";
 
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
     private int mPos;
+    private boolean mSubtitleVisible;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -33,6 +35,10 @@ public class CrimeListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_crime_list, container, false);
         mCrimeRecyclerView = (RecyclerView) view.findViewById(R.id.crime_recycler_view);
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        if(savedInstanceState != null){
+            mSubtitleVisible = savedInstanceState.getBoolean(SAVED_SUBTITLE_VISIBLE);
+        }
 
         updateUI();
         return view;
@@ -50,9 +56,22 @@ public class CrimeListFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle state){
+        super.onSaveInstanceState(state);
+        state.putBoolean(SAVED_SUBTITLE_VISIBLE, mSubtitleVisible);
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_crime_list, menu);
+
+        MenuItem item = menu.findItem(R.id.menu_item_show_subtitle);
+        if(mSubtitleVisible) {
+            item.setTitle(R.string.hide_subtitle);
+        } else {
+            item.setTitle(R.string.show_subtitle);
+        }
     }
 
     @Override
@@ -65,6 +84,8 @@ public class CrimeListFragment extends Fragment {
                 startActivity(intent);
                 return true;
             case R.id.menu_item_show_subtitle:
+                mSubtitleVisible = !mSubtitleVisible;
+                getActivity().invalidateOptionsMenu();
                 updateSubtitle();
                 return true;
             default :
@@ -81,13 +102,18 @@ public class CrimeListFragment extends Fragment {
             //mAdapter.notifyItemChanged(mPos);
             mAdapter.notifyDataSetChanged();
         }
+        updateSubtitle();
     }
 
     private void updateSubtitle(){
         CrimeLab crimeLab = CrimeLab.getCrimeLab(getActivity());
         int crimeCount = crimeLab.getCrimes().size();
         String subtitle = getString(R.string.subtitle_format, String.valueOf(crimeCount) );
+        if(!mSubtitleVisible){
+            subtitle = "";
+        }
         AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.getSupportActionBar().setSubtitle(subtitle);
     }
 
     private class CrimeViewHolder extends RecyclerView.ViewHolder
