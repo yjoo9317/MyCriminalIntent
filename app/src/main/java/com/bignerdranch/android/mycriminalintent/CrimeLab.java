@@ -1,7 +1,10 @@
 package com.bignerdranch.android.mycriminalintent;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+
+import com.bignerdranch.android.mycriminalintent.database.CrimeDBHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +18,8 @@ public class CrimeLab {
 
     private static CrimeLab sCrimeLab;
     private List<Crime> mCrimes;
+    private Context mContext;
+    private SQLiteDatabase mDatabase;
 
     public static CrimeLab getCrimeLab(Context context){
         if(sCrimeLab == null){
@@ -24,6 +29,10 @@ public class CrimeLab {
     }
 
     private CrimeLab(Context context){
+
+        mContext = context.getApplicationContext();
+        mDatabase = new CrimeDBHelper(mContext).getWritableDatabase();
+
         mCrimes = new ArrayList<>();
 
         for(int i = 0; i < 100; i++){
