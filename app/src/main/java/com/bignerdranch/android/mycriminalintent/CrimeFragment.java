@@ -116,6 +116,13 @@ public class CrimeFragment extends Fragment {
 
         return view;
     }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        CrimeLab.getCrimeLab(getActivity()).updateCrime(mCrime);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent){
         if(resultCode != Activity.RESULT_OK)
